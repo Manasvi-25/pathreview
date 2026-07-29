@@ -15,3 +15,14 @@
 **Setup confirmation:** [x] App runs locally at localhost:5173
 
 **Cohort ledger:** [x] Issue added to cohort ledger
+## Week 8 — Reproduction & solution planning
+
+**Reproduction commit link:** https://github.com/Manasvi-25/pathreview/commit/e6ebd4583ebeeb362563974c530821b3a225155e
+
+**Reproduction summary:** I ran the app locally and hit the health check endpoint directly with `curl http://localhost:8000/health`. It confirmed the exact error described in issue #154: `Textual SQL expression 'SELECT 1' should be explicitly declared as text('SELECT 1')`, causing the endpoint to report `"postgres": "unhealthy"` even though Postgres was actually running fine.
+
+**PLAN.md link:** https://github.com/Manasvi-25/pathreview/blob/fix/154-health-check-raw-sql/PLAN.md
+
+**Walkthrough video (recommended):** Not recorded.
+
+**Blockers or open questions:** While setting up my local environment, I ran into unrelated pre-existing bugs — duplicate SQLAlchemy index definitions across three model files (`profile.py`, `ingested_source.py`, `review.py`) that blocked the app from booting at all, and some pre-commit lint/type errors in `health.py` itself. I fixed the index issues to get my environment running, but I want to make sure my actual PR for #154 stays scoped to just the raw SQL fix and doesn't get tangled with these unrelated issues.
