@@ -1,4 +1,5 @@
 from datetime import datetime
+import sqlalchemy
 
 import structlog
 from fastapi import APIRouter, Depends, HTTPException, status
@@ -32,7 +33,7 @@ async def health_check(db=Depends(get_db)):
         # BUG(#154): raw SQL string fails under SQLAlchemy 2.x —
         # reproduced locally with error:
         # "Textual SQL expression 'SELECT 1' should be explicitly declared as text('SELECT 1')"
-        await db.execute("SELECT 1")
+        await db.execute(sqlalchemy.text("SELECT 1"))
         health_status["dependencies"]["postgres"] = "healthy"
         log.debug("postgres_health_check_passed")
     except Exception as exc:
