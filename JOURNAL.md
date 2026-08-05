@@ -26,3 +26,13 @@
 **Walkthrough video (recommended):** Not recorded.
 
 **Blockers or open questions:** While setting up my local environment, I ran into unrelated pre-existing bugs — duplicate SQLAlchemy index definitions across three model files (`profile.py`, `ingested_source.py`, `review.py`) that blocked the app from booting at all, and some pre-commit lint/type errors in `health.py` itself. I fixed the index issues to get my environment running, but I want to make sure my actual PR for #154 stays scoped to just the raw SQL fix and doesn't get tangled with these unrelated issues.
+
+## Week 9 — Solution building & PR submission
+
+### Check-in 1 (mid-week)
+
+**Current progress:** Implemented the core fix for issue #154 — wrapped the raw SQL string in `text()` in `api/routes/health.py`. Confirmed locally via curl that `/health` now reports `"postgres": "healthy"` instead of `"unhealthy"`.
+
+**Next steps:** Writing a unit test for the health check endpoint, then running `make check` and `make test-unit` to confirm nothing else is broken. Plan to open a draft PR once tests pass.
+
+**Blockers:** None currently, though the codebase has some pre-existing unrelated issues (duplicate model indexes from Week 8, and existing lint/type errors in `health.py`) I'll need to document as pre-existing rather than fix myself.
