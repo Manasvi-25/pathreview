@@ -36,3 +36,25 @@
 **Next steps:** Writing a unit test for the health check endpoint, then running `make check` and `make test-unit` to confirm nothing else is broken. Plan to open a draft PR once tests pass.
 
 **Blockers:** None currently, though the codebase has some pre-existing unrelated issues (duplicate model indexes from Week 8, and existing lint/type errors in `health.py`) I'll need to document as pre-existing rather than fix myself.
+
+---
+
+### Check-in 2 (end of week)
+
+**PR link:** https://github.com/ascherj/pathreview/pull/910
+
+**Branch:** fix/154-health-check-raw-sql
+
+**What you built:** Fixed the health check endpoint's PostgreSQL probe, which was passing a raw SQL string to `db.execute()` — incompatible with SQLAlchemy 2.x. Wrapped the query in `sqlalchemy.text()` so the health check correctly reports database status.
+
+**Tests added or updated:** Added `tests/unit/test_health.py` with 3 tests: one confirming postgres reports healthy when the query succeeds, a regression test confirming the query is passed as a `text()`-wrapped object rather than a raw string, and one confirming the endpoint correctly raises an HTTPException with status "unhealthy" when the database call fails.
+
+**Manual verification steps:**
+1. Start the app locally: `make run`
+2. In a separate terminal, run: `curl http://localhost:8000/health`
+3. Confirm the response includes `"postgres": "healthy"` (previously showed `"unhealthy"` due to the raw SQL bug)
+4. Optionally, revert the `text()` wrapper locally and re-run step 2 to see the original error reproduced: `Textual SQL expression 'SELECT 1' should be explicitly declared as text('SELECT 1')`
+
+**Self-review confirmation:** [x] make check passes  [x] make test-unit passes
+
+**Draft PR feedback received from:** none
